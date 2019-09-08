@@ -14,7 +14,7 @@
 #include <dirent.h>
 #include "../inc/lame.h"
 #include <time.h>
-#include <thread>
+#include <pthread.h>
 #ifdef _WIN32
 #include <windows.h>
 #else
@@ -320,7 +320,7 @@ int main(int argc,char* argv[])
                 char *l_fileName;
                 struct dirent *enTfd;
                 enTfd = readdir(directoryFd);
-
+		int rError;
                 while (enTfd){
                         l_fileName = enTfd->d_name;
 
@@ -332,6 +332,7 @@ int main(int argc,char* argv[])
                                  //       printf("Find one wav file %s\n", l_fileName);
                                         numberFile ++;
 
+					pthread_t thR;
                                         tHread_Data_t thR_Data; // array of parameters to be passed into thread
 
                                         thR_Data.st_fileName = new char[(strlen(l_fileName) + 1)];
@@ -339,12 +340,22 @@ int main(int argc,char* argv[])
 
                                         thR_Data.st_folderName = new char[l_folderAddr.size() + 1];
                                         strcpy(thR_Data.st_folderName, l_folderAddr.c_str());
+					
+					 if ( (rError = pthread_create(&thR, NULL,mp3Fromwav, &thR_Data)) ) {
+                                                fprintf(stderr, "error: pthread_create, rc: %d\n", rError);
+                                                return EXIT_FAILURE;
+                                        }
+                                        else{
+                                                /* waiting to complete thread and join here */
+                                                if ( pthread_join ( thR, NULL ) ) {
+                                                        fprintf(stderr, "error joining thread, rc: %d\n", rError);
+                                                        return EXIT_FAILURE;
 
-                                        thread thR(mp3Fromwav, &thR_Data);
-					thR.join();
-		
-                                        free(thR_Data.st_fileName);
-                                        free(thR_Data.st_folderName);
+                                                }
+				
+					}	
+                                        delete thR_Data.st_fileName;
+                                        delete thR_Data.st_folderName;
                                 }
                         }
                         enTfd = readdir(directoryFd);
