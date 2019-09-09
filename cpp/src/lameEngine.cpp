@@ -194,13 +194,9 @@ char *renameFile(char *fName)
         if(NULL == (fLocal = new char[(strlen (fName) + 1 )]))
                 return NULL;
         strcpy(fLocal,fName);
-	//printf("flaocl1 =%s\n",fLocal);
         rmDot = strrchr (fLocal, '.');
-	printf("rmdot=%s\n",rmDot);
         if ( NULL != rmDot)
                 *rmDot = '\0';
-        //strcat(rmDot,fNewExt);
-//	printf("flaocl2 =%s\n",fLocal);
         strcat(fLocal,fNewExt.c_str());
         return fLocal;
 }
@@ -234,15 +230,14 @@ void *mp3Fromwav(void *arg){
 
         FILE *wav_Fd = fopen(AbsltAddrchange, "rb");
         if(!wav_Fd){
-                printf("%s is not found!\n", AbsltAddrchange);
+                cout <<" not found!\n", AbsltAddrchange<<endl;
         }
         else{
-                printf("\nstart to convert %s : \n", AbsltAddrchange);
+                cout <<"start to convert %s : \n" << AbsltAddrchange<<endl;
         }
 
         char *fileNameNew=renameFile(fileName);
         // obtain the abosolut path of the file to be created
-	printf("new = %s\n",fileNameNew);      
   	char AbsltAddrNew[255];
         strcpy(AbsltAddrNew, address);
         strcat(AbsltAddrNew, "/");
@@ -254,24 +249,24 @@ void *mp3Fromwav(void *arg){
 	short int wav_Buffer[WAV_SIZE*2];
         unsigned char mp3_Buffer[MP3_SIZE];
 
-	lameEngine l;
+	lameEngine lameObj;
 	
-	l.set_in_samplerate(SamplingRate);
-	l.set_VBR(vbr_default);
-	l.init_params();
+	lameObj.set_in_samplerate(44100);
+	lameObj.set_VBR(vbr_default);
+	lameObj.init_params();
 	
 
     do {
-	printf("in\n");
         read = fread(wav_Buffer, 2*sizeof(short int), WAV_SIZE, wav_Fd);
         if (read == 0)
-            write = l.encode_flush(mp3_Buffer, MP3_SIZE);
+            write = lameObj.encode_flush(mp3_Buffer, MP3_SIZE);
         else
-            write = l.encode_buffer_interleaved(wav_Buffer, read, mp3_Buffer, MP3_SIZE);
+            write = lameObj.encode_buffer_interleaved(wav_Buffer, read, mp3_Buffer, MP3_SIZE);
         fwrite(mp3_Buffer, write, 1, mp3_Fd);
     } while (read != 0);
 
- 
+    delete fileNameNew; 
+
     fclose(mp3_Fd);
     fclose(wav_Fd);
 

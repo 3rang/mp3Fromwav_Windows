@@ -33,7 +33,6 @@ typedef struct _tHread_Data_t {
 
 #define SoftwareVersion 3.0
 
-int fRq;
 
 /***********************************************************************
  *Function Name :- readConfig
@@ -86,7 +85,7 @@ void lameEncoderInit(void)
 {
 	lame = lame_init();
 	/*    lame_set_num_channels(lame,2);//1 is single channel, 2 is the default setting*/
-	lame_set_in_samplerate(lame, fRq); // consumer audio like CDs use 44.1KHz sampling,
+	lame_set_in_samplerate(lame, 44100); // consumer audio like CDs use 44.1KHz sampling,
 	lame_set_VBR(lame, vbr_default);
 
 	/*            lame_set_brate(lame,8);*/
@@ -132,8 +131,8 @@ char *renameFile(char *fName)
 	rmDot = strrchr (fLocal, '.');
 	if ( NULL != rmDot)
 		*rmDot = '\0';
-	strcat(rmDot,fNewExt);
-	return rmDot;
+	strcat(fLocal,fNewExt);
+	return fLocal;
 }
 
 /***********************************************************************
@@ -155,7 +154,7 @@ void *mp3Fromwav(void* arg){
 	// obtain the abosolut path of the file to be converted
 	char AbsltAddrchange[255];
 	strcpy(AbsltAddrchange, address);
-	strcat(AbsltAddrchange, "/");
+//	strcat(AbsltAddrchange, "/");
 	strcat(AbsltAddrchange, fileName);
 
 	FILE *wav_Fd = fopen(AbsltAddrchange, "rb");
@@ -173,6 +172,8 @@ void *mp3Fromwav(void* arg){
 	strcat(AbsltAddrNew, "/");
 	strcat(AbsltAddrNew, fileNameNew);
 
+	printf("New path is:\n",AbsltAddrNew);	
+
 	FILE *mp3_Fd = fopen(AbsltAddrNew, "wb");
 	/*    printf("The newly generated file is: %s \n", addr);*/
 
@@ -183,7 +184,6 @@ void *mp3Fromwav(void* arg){
 	lameEncoderInit();
 
 	do {
-		printf("converting %s ...\n", fileNameNew);
 		read = fread(wav_Buffer, 2*sizeof(short int), WAV_SIZE, wav_Fd);
 		if (read == 0)
 		{
@@ -196,6 +196,7 @@ void *mp3Fromwav(void* arg){
 
 	} while (read != 0);
 
+	free(fileNameNew);
 	lameEncoderClose();
 	fclose(mp3_Fd);
 	fclose(wav_Fd);
