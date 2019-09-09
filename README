@@ -1,0 +1,58 @@
+
+Task:
+Make mp3 file from .wav file 
+
+Linux Build Setup
+Folder_Structure (Linux setup)
+|-- buildSetup.sh
+|-- c
+|   |-- bin
+|   |-- build
+|   |-- cfg
+|   |-- CMakeLists.txt
+|   |-- lib
+|   `-- src
+`-- cpp
+    |-- bin
+    |-- build
+    |-- cfg
+    |-- CMakeLists.txt
+    |-- lib
+    `-- src
+
+Windows Build Setup
+Folder_Structure (Windows )
+.
+|-- buildSetup.sh
+|-- c
+|   |-- bin
+|   |-- inc
+|   |-- lib
+|   |-- Makefile
+|   `-- src
+`-- cpp
+    |-- bin
+    |-- inc
+    |-- lib
+    |-- Makefile
+    `-- src
+
+To compile code 
+
+start script buildSetup.sh 
+	./buildSetup.sh
+	
+It will create menu like (GUI)
+
+1.enviroment  :-  it will download all require dependencies
+2.Build setup :-  Build binary 
+3.clean setup :-  clean old build
+4.Run		  :-  go to bin folder and run bin with path of .wav file 
+5.exit setup  :-  exit setup 
+
+Note:-
+First time we need to run enviroment option to make setup ready with all dependencies.
+
+
+
+
