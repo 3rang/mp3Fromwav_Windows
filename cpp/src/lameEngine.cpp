@@ -230,10 +230,10 @@ void *mp3Fromwav(void *arg){
 
         FILE *wav_Fd = fopen(AbsltAddrchange, "rb");
         if(!wav_Fd){
-                cout <<" not found!\n", AbsltAddrchange<<endl;
+                cout <<" not found!" << AbsltAddrchange<<endl;
         }
         else{
-                cout <<"start to convert %s : \n" << AbsltAddrchange<<endl;
+                cout <<"start to convert" << AbsltAddrchange<<endl;
         }
 
         char *fileNameNew=renameFile(fileName);
